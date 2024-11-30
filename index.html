@@ -4,7 +4,106 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Styxora</title>
+    <div id="theme-toggle">
+        <label class="toggle-label">
+            <input type="checkbox" id="dark-mode-toggle">
+            <span class="slider"></span>
+        </label>
+    </div>
     <style>
+/* General Styles */
+body {
+    font-family: 'Roboto', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f7fa;
+    color: #333;
+    transition: background-color 0.3s, color 0.3s; /* Smooth transitions */
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+    background-color: #1c1c1c;
+    color: #f4f7fa;
+}
+
+/* Dark Mode Elements */
+body.dark-mode header {
+    background-color: #333;
+    color: #f4f7fa;
+}
+
+body.dark-mode table th {
+    background-color: #444;
+}
+
+body.dark-mode table td {
+    background-color: #333;
+}
+
+body.dark-mode input, body.dark-mode select {
+    background-color: #333;
+    color: #f4f7fa;
+    border: 1px solid #555;
+}
+
+body.dark-mode button {
+    background-color: #555;
+    color: #f4f7fa;
+}
+
+/* Theme Toggle Switch */
+#theme-toggle {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+}
+
+.toggle-label {
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+    position: relative;
+}
+
+.toggle-label input {
+    display: none;
+}
+
+.toggle-label .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: background-color 0.3s;
+    border-radius: 15px;
+}
+
+.toggle-label .slider::before {
+    content: "";
+    position: absolute;
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: transform 0.3s;
+    border-radius: 50%;
+}
+
+/* When checked, slider changes */
+.toggle-label input:checked + .slider {
+    background-color: #153cea;
+}
+
+.toggle-label input:checked + .slider::before {
+    transform: translateX(20px);
+}
+
+
 /* Global Reset */
 * {
     margin: 0;
@@ -207,6 +306,59 @@ section {
         font-size: 0.9rem;
     }
 }
+
+/* StyxSwap Section Styling */
+#styx-swap-section {
+    background-color: white;
+    color: #333;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-top: 20px; /* Add space between the price chart and this section */
+    text-align: center; /* Center-align content */
+    max-width: 600px; /* Optional: Restrict width for better layout */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#styx-swap-section h3 {
+    font-size: 1.5rem;
+    color: #153cea;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+#styx-swap-section input {
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+#styx-swap-section input:focus {
+    border-color: #153cea;
+    outline: none;
+    box-shadow: 0 0 5px rgba(21, 60, 234, 0.5);
+}
+
+#styx-swap-section button {
+    background-color: #153cea;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+#styx-swap-section button:hover {
+    background-color: #1d4ae9;
+}
+
     </style>
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 </head>
@@ -834,6 +986,28 @@ document.addEventListener("DOMContentLoaded", () => {
     setInterval(updateTotalCryptoValue, 60000); // Refresh every 60 seconds
 });
 
+
+// Dark Mode Toggle
+document.addEventListener("DOMContentLoaded", () => {
+    const toggle = document.getElementById("dark-mode-toggle");
+
+    // Load saved theme from localStorage
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark") {
+        document.body.classList.add("dark-mode");
+        toggle.checked = true;
+    }
+
+    toggle.addEventListener("change", () => {
+        if (toggle.checked) {
+            document.body.classList.add("dark-mode");
+            localStorage.setItem("theme", "dark"); // Save preference
+        } else {
+            document.body.classList.remove("dark-mode");
+            localStorage.setItem("theme", "light"); // Save preference
+        }
+    });
+});
 
     </script>
 </body>
