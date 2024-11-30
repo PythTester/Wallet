@@ -848,8 +848,7 @@ document.addEventListener("DOMContentLoaded", () => {
     loadTradingViewChart(TRADINGVIEW_SYMBOLS["bitcoin"]);
 });
 
-setInterval(fetchCryptoPrices, 10000);
-setInterval(updatePortfolioDisplay, 10000);
+
 
 let styxBalance = parseFloat(localStorage.getItem("styxBalance")) || 0; // Load from localStorage or default to 0
 let rewardInterval = 3 * 60 * 1000; // 3 minutes in milliseconds
@@ -1184,11 +1183,7 @@ async function updateTotalWalletValue() {
     }
 }
 
-// Initialize and refresh every 10 seconds
-document.addEventListener("DOMContentLoaded", () => {
-    updateTotalWalletValue();
-    setInterval(updateTotalWalletValue, 10000);
-});
+
 
 async function calculateTotalWalletValue() {
     let totalCryptoValue = 0;
@@ -1280,11 +1275,22 @@ async function updateTotalWalletValue() {
 }
 
 
-// Initialize and refresh every minute
-document.addEventListener("DOMContentLoaded", () => {
-    updateTotalWalletValue();
-    setInterval(updateTotalWalletValue, 10000); // Refresh every 1 minute
+async function refreshAll() {
+    try {
+        await updatePortfolioDisplay(); // Refresh portfolio table
+        await fetchCryptoPrices();      // Update real-time prices
+        await updateTotalWalletValue(); // Refresh wallet balances
+    } catch (error) {
+        console.error("Error during refresh:", error);
+    }
+}
+
+// Call refreshAll on page load
+document.addEventListener("DOMContentLoaded", async () => {
+    await refreshAll(); // Initial refresh when the page loads
+    setInterval(refreshAll, 10000); // Consolidated interval every 10 seconds
 });
+
 
     </script>
 </body>
