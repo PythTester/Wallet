@@ -390,15 +390,26 @@ section {
     background-color: #1d4ae9;
 }
 
+/* Balance Display in the Header */
 #balance-display {
     font-size: 0.9rem;
     position: absolute;
     left: 20px;
-    top: 40px; /* Adjusted to move it slightly down */
-    color: white; /* Visible on a dark header background */
+    top: 50%; /* Vertically center within the header */
+    transform: translateY(-50%); /* Align to center */
+    color: white; /* Ensure visibility on a dark header background */
     font-weight: bold;
     text-align: left;
 }
+
+/* Adjustments for Mobile Screens */
+@media screen and (max-width: 768px) {
+    #balance-display {
+        left: 10px; /* Reduce padding for smaller screens */
+        font-size: 0.8rem; /* Slightly smaller font size */
+    }
+}
+
 
 
 
@@ -522,8 +533,13 @@ let portfolio = JSON.parse(localStorage.getItem("portfolio")) || {
     ethereum: { quantity: 0, value: 0 },
     "binance-coin": { quantity: 0, value: 0 },
     algorand: { quantity: 0, value: 0 },
-    solana: { quantity: 0, value: 0 }
+    solana: { quantity: 0, value: 0 },
+    ripple: { quantity: 0, value: 0 },
+    cardano: { quantity: 0, value: 0 },
+    polkadot: { quantity: 0, value: 0 },
+    dogecoin: { quantity: 0, value: 0 }
 };
+
 
 function initializePortfolio() {
     const supportedCoins = [
