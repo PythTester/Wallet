@@ -390,24 +390,21 @@ section {
     background-color: #1d4ae9;
 }
 
-/* Balance Display in the Header */
-#balance-display {
-    font-size: 0.9rem;
-    position: absolute;
-    left: 20px;
-    top: 50%; /* Vertically center within the header */
-    transform: translateY(-50%); /* Align to center */
-    color: white; /* Ensure visibility on a dark header background */
-    font-weight: bold;
-    text-align: left;
+/* Balance Section */
+#balance {
+    text-align: center;
+    background-color: #eef3f9; /* Light background */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
 }
 
-/* Adjustments for Mobile Screens */
-@media screen and (max-width: 768px) {
-    #balance-display {
-        left: 10px; /* Reduce padding for smaller screens */
-        font-size: 0.8rem; /* Slightly smaller font size */
-    }
+#total-wallet-value {
+    font-size: 1.4em; /* Larger font size for emphasis */
+    font-weight: bold;
+    color: #153cea; /* Styxora brand blue */
+    margin-top: 10px;
 }
 
 
@@ -419,9 +416,6 @@ section {
 <body>
     
 <header>
-    <div id="balance-display">
-        <p>Total Wallet: <span id="header-balance">$0.00</span></p>
-    </div>
     <div id="header-container">
         <h1>Styxora</h1>
         <div id="styx-rewards-box">
@@ -444,10 +438,12 @@ section {
         </table>
     </section>
     <section id="balance">
-        <h2>MUSD Balance</h2>
-        <p id="account-balance">Balance: $100,000.00</p>
-        <p id="crypto-value" style="font-size: 1rem; color: gray;">Total Crypto Value: $0.00</p>
+        <h2>Styxora Wallet</h2>
+        <p id="account-balance">MUSD Balance: $100,000.00</p>
+        <p id="crypto-value" style="font-size: 1rem; color: gray;">Crypto Holdings: $0.00</p>
+        <p id="total-wallet-value" style="font-size: 1.2rem; font-weight: bold; color: #153cea;">Total: $100,000.00</p>
     </section>
+    
     <table>
         <thead>
             <tr>
@@ -1144,6 +1140,50 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Automatically refresh every 1 minute (60000ms)
     setInterval(refreshPortfolioAndWallet, 60000);
+});
+
+
+async function updateTotalWalletValue() {
+    const accountBalanceElement = document.getElementById("account-balance");
+    const cryptoValueElement = document.getElementById("crypto-value");
+    const totalWalletValueElement = document.getElementById("total-wallet-value");
+
+    try {
+        // Calculate Total Crypto Value
+        let totalCryptoValue = 0;
+        const response = await fetch(API_URL);
+        const data = await response.json();
+
+        for (const [crypto, details] of Object.entries(portfolio)) {
+            if (details.quantity > 0) {
+                const coin = data.data.find((c) => c.nameid === crypto);
+                const currentPrice = coin ? parseFloat(coin.price_usd) : 0;
+                totalCryptoValue += details.quantity * currentPrice;
+            }
+        }
+
+        // Update MUSD and Crypto Balances
+        accountBalanceElement.textContent = `MUSD Balance: $${balance.toLocaleString()}`;
+        cryptoValueElement.textContent = `Crypto Holdings: $${totalCryptoValue.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        })}`;
+
+        // Calculate Total Wallet Value
+        const totalWalletValue = balance + totalCryptoValue;
+        totalWalletValueElement.textContent = `Total: $${totalWalletValue.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        })}`;
+    } catch (error) {
+        console.error("Error updating total wallet value:", error);
+    }
+}
+
+// Initialize and refresh every minute
+document.addEventListener("DOMContentLoaded", () => {
+    updateTotalWalletValue();
+    setInterval(updateTotalWalletValue, 60000); // Refresh every 1 minute
 });
 
     </script>
